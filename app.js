@@ -1,17 +1,27 @@
   document.getElementById('yr').textContent = new Date().getFullYear();
 
   /* ── Navigation ── */
-  const paths = {};
+function navigate(page, linkEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const nav = linkEl || document.querySelector('[data-page="' + page + '"]');
+  if (nav) nav.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // close mobile menu
+  document.getElementById('nav-links').classList.remove('open');
+  const hb = document.getElementById('hamburger');
+  if (hb) hb.classList.remove('open');
+}
 
-  function navigate(page, linkEl) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById('page-' + page);
-    target.classList.add('active');
-    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-    const nav = linkEl || document.querySelector('[data-page="' + page + '"]');
-    if (nav) nav.classList.add('active');
-    window.scrollTo(0, 0);
-  }
+
+  const hamburger = document.getElementById('hamburger');
+if (hamburger) {
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    document.getElementById('nav-links').classList.toggle('open');
+  });
+}
 
   document.querySelectorAll('.nav-links a').forEach(a =>
     a.addEventListener('click', e => e.preventDefault())
