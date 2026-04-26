@@ -1,6 +1,6 @@
   document.getElementById('yr').textContent = new Date().getFullYear();
 
-  /* ── Navigation ── */
+
 function navigate(page, linkEl) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
@@ -8,7 +8,7 @@ function navigate(page, linkEl) {
   const nav = linkEl || document.querySelector('[data-page="' + page + '"]');
   if (nav) nav.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  // close mobile menu
+
   document.getElementById('nav-links').classList.remove('open');
   const hb = document.getElementById('hamburger');
   if (hb) hb.classList.remove('open');
@@ -27,7 +27,7 @@ if (hamburger) {
     a.addEventListener('click', e => e.preventDefault())
   );
 
-  /* ── Ink diffusion name ── */
+
   const nameWrap = document.getElementById('name-wrap');
   const letters = [
     { t: '>>', br: true  },
@@ -59,7 +59,7 @@ if (hamburger) {
     nameWrap.appendChild(s);
   });
 
-  /* ── Meteor / shooting-star canvas ── */
+
   (function() {
     const canvas = document.getElementById('meteor-canvas');
     const ctx    = canvas.getContext('2d');
@@ -72,7 +72,7 @@ if (hamburger) {
     window.addEventListener('resize', resize);
     resize();
 
-    // Static star field
+
     const STAR_COUNT = 160;
     const stars = Array.from({length: STAR_COUNT}, () => ({
       x: Math.random() * 2000,
@@ -83,16 +83,16 @@ if (hamburger) {
       twinklePhase: Math.random() * Math.PI * 2,
     }));
 
-    // Meteors
+
     class Meteor {
       constructor() { this.reset(true); }
       reset(initial = false) {
-        // start off-screen top-right area
+
         this.x     = Math.random() * W * 1.4;
         this.y     = initial ? Math.random() * H * 0.5 - H * 0.2 : -20;
         this.len   = Math.random() * 120 + 60;
         this.speed = Math.random() * 3.5 + 1.8;
-        this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.15; // ~45°
+        this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.15; 
         this.vx    = Math.cos(this.angle) * this.speed;
         this.vy    = Math.sin(this.angle) * this.speed;
         this.alpha = 0;
@@ -105,7 +105,7 @@ if (hamburger) {
         this.x += this.vx;
         this.y += this.vy;
         this.life++;
-        // fade in quickly, fade out slowly
+
         if (this.life < 15) this.alpha = this.life / 15;
         else if (this.life > this.maxLife - 20) this.alpha = Math.max(0, (this.maxLife - this.life) / 20);
         else this.alpha = 1;
@@ -125,7 +125,7 @@ if (hamburger) {
         ctx.lineWidth   = this.width;
         ctx.lineCap     = 'round';
         ctx.stroke();
-        // bright head dot
+
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.width * 0.9, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(220,255,240,${this.alpha * 0.9})`;
@@ -140,14 +140,14 @@ if (hamburger) {
       if (meteors.length < 6) meteors.push(new Meteor());
     }
 
-    // Seed a couple at start
+
     meteors.push(new Meteor());
     meteors.push(new Meteor());
 
     function tick() {
       ctx.clearRect(0, 0, W, H);
 
-      // Draw static stars
+
       const t = performance.now() / 1000;
       for (const s of stars) {
         const twinkle = 0.5 + 0.5 * Math.sin(t * s.twinkleSpeed * 6 + s.twinklePhase);
@@ -157,17 +157,17 @@ if (hamburger) {
         ctx.fill();
       }
 
-      // Spawn occasionally
+
       frame++;
       if (frame % 90 === 0 || (frame % 30 === 0 && Math.random() < 0.25)) spawnMeteor();
 
-      // Update + draw meteors
+
       for (let i = meteors.length - 1; i >= 0; i--) {
         meteors[i].update();
         meteors[i].draw();
         if (meteors[i].dead) {
           meteors.splice(i, 1);
-          // immediately respawn to keep a baseline
+
           if (Math.random() < 0.7) meteors.push(new Meteor());
         }
       }
