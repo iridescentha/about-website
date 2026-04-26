@@ -48,7 +48,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 var(--pad-x); height: 56px;
     }
-    .nav-logo { font-size: 13px; font-weight: 500; color: var(--green); letter-spacing: .04em; cursor: pointer; }
+    .nav-logo { font-size: 9px; font-weight: 500; color: var(--green); letter-spacing: .04em; cursor: pointer; }
     .nav-logo span { color: var(--muted); font-weight: 300; }
     .nav-links { display: flex; align-items: center; list-style: none; }
     .nav-links li a {
