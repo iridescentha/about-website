@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iridescentha</title>
+  <link rel="icon" type="image/png" href="/hlogo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<canvas id="meteor-canvas" style="
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+"></canvas>
+
+<div class="shell">
+
+  <header class="site-header">
+    <nav class="navbar">
+      <span class="nav-logo" onclick="navigate('about')">&lt;<span>iridescentha</span>/&gt;</span>
+      <ul class="nav-links">
+        <li><a href="#" class="active" data-page="about"     onclick="navigate('about',this)">about</a></li>
+        <li><a href="#" data-page="projects"   onclick="navigate('projects',this)">projects</a></li>
+        <li><a href="#" data-page="interests"  onclick="navigate('interests',this)">interests</a></li>
+        <li><a href="#" data-page="contact"    onclick="navigate('contact',this)">contact</a></li>
+      </ul>
+      <div class="nav-status"><div class="nav-status-dot"></div><span>top right</span></div>
+    </nav>
+  </header>
+
+  <div class="page active" id="page-about">
+    <div class="about-left">
+
+      <div>
+        <!-- <div class="tline"><span class="p">❯ </span><span class="c">whoami</span></div> -->
+        <!-- <div class="tline"><span class="o">hugo — developer</span></div> -->
+      </div>
+
+      <div>
+        <div class="name-wrap" id="name-wrap"></div>
+        <div class="role">self-proclaimed developer / student</div>
+        <div class="role2">Hello There</div>
+        <div class="bio">
+          I'm Hugo, also known as iridescentha. I build things that interests me. I like <span class="hl">learning new things</span>,
+          usually because I don't fully understand them yet.
+        </div>
+        <div class="bio">
+          I also spend time playing <span class="hl">games</span>
+          in my free time. I share my interest here, so nice to meet you, and hope you find something interesting to check out!
+        </div>
+      </div>
+
+      <div>
+        <div class="slabel">stack</div>
+        <div class="skills">
+          <span class="tag f">Javascript</span>
+          <span class="tag f">Python</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Swift</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="slabel">find me on</div>
+        <div class="socials">
+          <a class="soc-btn" href="https://www.instagram.com/iridescentt2" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            instagram
+          </a>
+          <a class="soc-btn" href="https://discord.com/users/825386916198612993" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            discord
+          </a>
+          <a class="soc-btn" href="https://github.com/iridescentha" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            github
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="about-right">
+      <div>
+
+      </div>
+
+
+      <div class="aside-divider"></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-projects">
+    <div class="slabel">selected work</div>
+    <div class="projs">
+      <div class="proj">
+        <div class="pnum">01</div>
+        <div class="pbody">
+          <div class="ptitle">Nothing yet</div>
+          <div class="pdesc">Nothing yet (projects soon in github)</div>
+          <div class="ptags"><span class="ptag">Nothing yet</span><span class="ptag">·</span><span class="ptag">Nothing yet</span><span class="ptag">·</span><span class="ptag">Nothing yet</span></div>
+        </div>
+        <a class="plink" href="#">↗</a>
+      </div>
+      <div class="proj">
+        <div class="pnum">02</div>
+        <div class="pbody">
+          <div class="ptitle">Nothing yet</div>
+          <div class="pdesc">Nothing yet (projects soon in github)</div>
+          <div class="ptags"><span class="ptag">Nothing yet</span><span class="ptag">·</span><span class="ptag">Nothing yet</span><span class="ptag">·</span><span class="ptag">Nothing yet</span></div>
+        </div>
+        <a class="plink" href="#">↗</a>
+      </div>
+      <div class="proj">
+        <div class="pnum">03</div>
+        <div class="pbody">
+          <div class="ptitle">Nothing yet</div>
+          <div class="pdesc">Nothing yet (projects soon in github)</div>
+          <div class="ptags"><span class="ptag">Nothing yet</span><span class="ptag">·</span><span class="ptag">Nothing yet</span><span class="ptag">·</span><span class="ptag">Nothing yet</span></div>
+        </div>
+        <a class="plink" href="#">↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-interests">
+    <div class="slabel">things i like</div>
+    <div class="interests-grid">
+      <div class="ic">
+        <div class="ic-head"><span class="ic-emoji">🎵</span><span class="ic-title">music</span></div>
+        <div class="ic-desc">Music is something I really enjoy. It has the power to evoke emotions and create a connection with the listener.</div>
+      </div>
+      <div class="ic">
+        <div class="ic-head"><span class="ic-emoji">🎬</span><span class="ic-title">anime</span></div>
+        <div class="ic-desc">I like watching anime sometimes, it's a great way to relax and enjoy some amazing stories and art.</div>
+      </div>
+      <div class="ic">
+        <div class="ic-head"><span class="ic-emoji">🎮</span><span class="ic-title">games</span></div>
+        <div class="ic-desc">I enjoy playing video games, especially with my friends that brings fun and laughter.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-contact">
+    <div class="slabel">get in touch</div>
+    <div class="contact-intro">
+      I'm always open to <span class="hl">interesting conversations</span> and <span class="hl">new opportunities</span>.<br>
+      Best way to reach me is through discord — I usually reply within a day.
+    </div>
+    <div class="contact-links">
+      <a class="contact-link" href="mailto:hugo.afiza.adinanta@gmail.com">
+        <svg viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg>
+        <div><div class="cl-label">email</div><div class="cl-value">hugo.afiza.adinanta@gmail.com</div></div>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <a class="contact-link" href="https://github.com/iridescentha" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        <div><div class="cl-label">github</div><div class="cl-value">https://github.com/iridescentha</div></div>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <a class="contact-link" href="https://discord.com/users/825386916198612993" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <div><div class="cl-label">discord</div><div class="cl-value">iridescentha</div></div>
+        <span class="cl-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="bottombar">
+    <span><span class="sg">●</span> available</span>
+    <span>ID · UTC+7</span>
+    <span>v1.0.0<span class="cursor"></span></span>
+  </div>
+  <div class="footer">
+    © <span id="yr"></span> · built with <span style="color:var(--green)">&#60;/&#62;</span>
+  </div>
+
+</div>
+<script src="app.js"></script> 
+</body>
+</html>
