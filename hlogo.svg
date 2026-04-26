@@ -1,0 +1,17 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" fill="none">
+
+  <!-- Two vertical strokes, slightly offset heights -->
+  <line x1="52" y1="38" x2="52" y2="162"
+        stroke="white" stroke-width="6" stroke-linecap="round"/>
+
+  <line x1="148" y1="52" x2="148" y2="176"
+        stroke="white" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Crossbar — sits slightly below centre, connecting the two -->
+  <line x1="52" y1="106" x2="148" y2="106"
+        stroke="white" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Single accent dot — top right, like a diacritic or a breath mark -->
+  <circle cx="162" cy="38" r="5" fill="white"/>
+
+</svg>
