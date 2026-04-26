@@ -166,7 +166,8 @@
     }
     tick();
   })();
-  const lbar = document.getElementById('lbar');
+const lbar = document.getElementById('lbar');
+if (lbar) {
   for (let i = 0; i < 18; i++) {
     const b = document.createElement('div');
     b.className = 'lb';
@@ -177,3 +178,4 @@
     b.style.cssText = `--lo:${lo}px;--hi:${hi}px;--d:${d}s;--dl:${dl}s;height:${lo}px;`;
     lbar.appendChild(b);
   }
+}
