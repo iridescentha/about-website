@@ -190,7 +190,6 @@ if (lbar) {
   }
 }
 
-/* ── Abstract waveform on music card ── */
 (function () {
   const cv = document.getElementById('music-wave');
   if (!cv) return;
@@ -231,7 +230,6 @@ if (lbar) {
   drawWave();
 })();
 
-/* ── Constellation on games card ── */
 (function () {
   const cv = document.getElementById('constellation-canvas');
   if (!cv) return;
