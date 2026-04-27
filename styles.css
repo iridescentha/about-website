@@ -236,13 +236,11 @@ body::before {
 }
 .ic:hover { border-color: rgba(255,255,255,0.14); }
 
-/* eyebrow label */
 .ic-eyebrow {
   font-size: 9.5px; letter-spacing: .2em; text-transform: uppercase;
   color: var(--muted2); margin-bottom: .55rem;
 }
 
-/* ══ MUSIC ══ */
 .ic.music {
   background: var(--surface);
   border-radius: 12px 12px 4px 4px;
@@ -270,7 +268,7 @@ body::before {
   border: .5px solid rgba(74,222,128,.18); border-radius: 3px;
   padding: 2px 9px; letter-spacing: .06em;
 }
-/* abstract SVG divider between info and lfm */
+
 .ic-divider-abstract {
   flex-shrink: 0;
   width: 1px;
@@ -301,7 +299,6 @@ body::before {
 }
 .abstract-divider-svg { display: none; }
 
-/* Last.fm panel */
 .lfm-panel {
   width: 220px; flex-shrink: 0;
   display: flex; flex-direction: column; gap: .4rem;
@@ -350,7 +347,6 @@ body::before {
 .lfm-skeleton { font-size: 10.5px; color: var(--muted2); padding: .4rem .55rem; font-style: italic; opacity: .55; }
 .lfm-err { font-size: 10px; color: rgba(239,68,68,.4); padding: .4rem .55rem; }
 
-/* ══ ANIME ══ */
 .ic.anime {
   background: var(--surface);
   border-radius: 4px;
@@ -358,7 +354,7 @@ body::before {
   display: flex; gap: 1.5rem; align-items: flex-start;
   position: relative;
 }
-/* abstract blob — blue radial in corner */
+
 .anime-blob {
   position: absolute; top: -70px; right: -90px;
   width: 160px; height: 160px; border-radius: 50%;
@@ -404,7 +400,6 @@ body::before {
 }
 .anilist-btn:hover { color: rgba(99,130,255,.95); border-color: rgba(99,130,255,.4); background: rgba(99,130,255,.07); }
 
-/* ══ GAMES ══ */
 .ic.games {
   background: var(--surface);
   border-radius: 4px 4px 12px 12px;
@@ -413,12 +408,13 @@ body::before {
   position: relative;
 }
 .games-blob {
-  position: absolute; top: -70px; right: 360px;
+  position: absolute; top: -70px; left: -90px;
   width: 160px; height: 160px; border-radius: 50%;
   background: radial-gradient(circle, rgba(54, 191, 201, 0.12) 0%, transparent 50%);
   pointer-events: none;
   transition: transform .6s ease;
 }
+.ic.games:hover .games-blob { transform: scale(1.3); }
 .constellation-canvas {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -455,7 +451,6 @@ body::before {
 .ic.games .stat-val { font-size: 14px; font-weight: 600; color: var(--text); }
 .ic.games .stat-key { font-size: 10px; color: var(--muted2); letter-spacing: .08em; text-transform: uppercase; }
 
-/* Spotify button */
 .spotify-btn {
   display: inline-flex; align-items: center; gap: 7px;
   margin-top: 1rem;
@@ -472,7 +467,6 @@ body::before {
   background: rgba(74,222,128,.06);
 }
 
-/* Big 01 corner — sits bottom-left, doesn't stretch the card */
 .ic-num-corner {
   position: absolute;
   bottom: 1.2rem; left: 1.8rem;
@@ -483,8 +477,6 @@ body::before {
   user-select: none; pointer-events: none;
   z-index: 0;
 }
-
-/* fake terminal readout — removed */
 
 .interests-note { margin-top: 1.25rem; }
 .interests-note-line { font-size:11px; color:var(--muted2); font-style:italic; }

@@ -261,14 +261,12 @@ if (lbar) {
   function draw() {
     ctx.clearRect(0, 0, W, H);
 
-    // move dots
     for (const d of dots) {
       d.x += d.vx; d.y += d.vy;
       if (d.x < 0 || d.x > W) d.vx *= -1;
       if (d.y < 0 || d.y > H) d.vy *= -1;
     }
 
-    // draw connections
     for (let i = 0; i < dots.length; i++) {
       for (let j = i + 1; j < dots.length; j++) {
         const dx = dots[i].x - dots[j].x;
@@ -286,13 +284,11 @@ if (lbar) {
       }
     }
 
-    // draw dots
     for (const d of dots) {
       ctx.beginPath();
       ctx.arc(d.x, d.y, d.r * 1.4, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(103,232,249,0.8)';
       ctx.fill();
-      // small glow
       ctx.beginPath();
       ctx.arc(d.x, d.y, d.r * 3, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(103,232,249,0.08)';
@@ -304,7 +300,6 @@ if (lbar) {
   draw();
 })();
 
-/* ── Last.fm recent tracks ── */
 const LFM_KEY  = 'f4ee87a255993557ff82b1e27e0a9a73';
 const LFM_USER = 'Duragov';
 const LFM_URL  = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LFM_USER}&api_key=${LFM_KEY}&limit=5&format=json`;
@@ -342,7 +337,6 @@ async function loadLastFm() {
     const tracks = data.recenttracks?.track;
     if (!tracks || !tracks.length) throw new Error('no tracks');
 
-    // Rebuild panel keeping header
     const header = panel.querySelector('.lfm-header');
     panel.innerHTML = '';
     panel.appendChild(header);
@@ -356,7 +350,6 @@ async function loadLastFm() {
       row.rel = 'noopener';
       row.style.textDecoration = 'none';
 
-      // Album art
       const imgSrc = t.image?.find(i => i.size === 'small')?.['#text'];
       if (imgSrc && imgSrc.trim() !== '') {
         const img = document.createElement('img');
@@ -369,7 +362,6 @@ async function loadLastFm() {
         row.appendChild(ph());
       }
 
-      // Text body
       const body = document.createElement('div');
       body.className = 'lfm-body';
       body.innerHTML = `
@@ -378,7 +370,6 @@ async function loadLastFm() {
       `;
       row.appendChild(body);
 
-      // Right side — bars if now playing, else time
       const right = document.createElement('div');
       right.className = 'lfm-right';
       if (isNow) {
