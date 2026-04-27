@@ -1,4 +1,4 @@
-  document.getElementById('yr').textContent = new Date().getFullYear();
+document.getElementById('yr').textContent = new Date().getFullYear();
 
 
 function navigate(page, linkEl) {
@@ -189,3 +189,230 @@ if (lbar) {
     lbar.appendChild(b);
   }
 }
+
+/* ── Abstract waveform on music card ── */
+(function () {
+  const cv = document.getElementById('music-wave');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  let W, H, frame = 0;
+
+  function resize() {
+    const rect = cv.parentElement.getBoundingClientRect();
+    W = cv.width  = rect.width  || 800;
+    H = cv.height = rect.height || 220;
+  }
+  resize();
+  new ResizeObserver(resize).observe(cv.parentElement);
+
+  const LINES = 5;
+  function drawWave() {
+    ctx.clearRect(0, 0, W, H);
+    const t = frame / 80;
+    for (let l = 0; l < LINES; l++) {
+      const amp   = 18 + l * 9;
+      const freq  = 0.008 + l * 0.003;
+      const phase = l * 1.1;
+      const yBase = H * (.25 + l * .13);
+      const alpha = 0.06 - l * 0.008;
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 2) {
+        const y = yBase + Math.sin(x * freq + t + phase) * amp
+                        + Math.sin(x * freq * 1.7 + t * 1.3 + phase) * (amp * .4);
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = `rgba(74,222,128,${alpha})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    frame++;
+    requestAnimationFrame(drawWave);
+  }
+  drawWave();
+})();
+
+/* ── Constellation on games card ── */
+(function () {
+  const cv = document.getElementById('constellation-canvas');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  let W, H;
+
+  const DOTS = 18;
+  let dots = [];
+
+  function resize() {
+    const rect = cv.parentElement.getBoundingClientRect();
+    W = cv.width  = rect.width  || 400;
+    H = cv.height = rect.height || 260;
+    dots = Array.from({ length: DOTS }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - .5) * .18,
+      vy: (Math.random() - .5) * .18,
+      r: Math.random() * 1.2 + .5,
+    }));
+  }
+  resize();
+  new ResizeObserver(resize).observe(cv.parentElement);
+
+  const CONNECT_DIST = 90;
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // move dots
+    for (const d of dots) {
+      d.x += d.vx; d.y += d.vy;
+      if (d.x < 0 || d.x > W) d.vx *= -1;
+      if (d.y < 0 || d.y > H) d.vy *= -1;
+    }
+
+    // draw connections
+    for (let i = 0; i < dots.length; i++) {
+      for (let j = i + 1; j < dots.length; j++) {
+        const dx = dots[i].x - dots[j].x;
+        const dy = dots[i].y - dots[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < CONNECT_DIST) {
+          const alpha = (1 - dist / CONNECT_DIST) * 0.45;
+          ctx.beginPath();
+          ctx.moveTo(dots[i].x, dots[i].y);
+          ctx.lineTo(dots[j].x, dots[j].y);
+          ctx.strokeStyle = `rgba(103,232,249,${alpha})`;
+          ctx.lineWidth = .8;
+          ctx.stroke();
+        }
+      }
+    }
+
+    // draw dots
+    for (const d of dots) {
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r * 1.4, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(103,232,249,0.8)';
+      ctx.fill();
+      // small glow
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r * 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(103,232,249,0.08)';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── Last.fm recent tracks ── */
+const LFM_KEY  = 'f4ee87a255993557ff82b1e27e0a9a73';
+const LFM_USER = 'Duragov';
+const LFM_URL  = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${LFM_USER}&api_key=${LFM_KEY}&limit=5&format=json`;
+
+function timeAgo(unixTs) {
+  const diff = Math.floor(Date.now() / 1000) - parseInt(unixTs);
+  if (diff < 60)   return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400)return Math.floor(diff / 3600) + 'h ago';
+  return Math.floor(diff / 86400) + 'd ago';
+}
+
+function makeBars() {
+  const wrap = document.createElement('div');
+  wrap.className = 'lfm-bars';
+  const speeds = ['.35s', '.5s', '.4s'];
+  const delays = ['0s', '.15s', '.08s'];
+  for (let i = 0; i < 3; i++) {
+    const s = document.createElement('span');
+    s.style.setProperty('--bd', speeds[i]);
+    s.style.setProperty('--bdl', delays[i]);
+    s.style.height = '5px';
+    wrap.appendChild(s);
+  }
+  return wrap;
+}
+
+async function loadLastFm() {
+  const panel = document.getElementById('lfm-panel');
+  if (!panel) return;
+
+  try {
+    const res  = await fetch(LFM_URL);
+    const data = await res.json();
+    const tracks = data.recenttracks?.track;
+    if (!tracks || !tracks.length) throw new Error('no tracks');
+
+    // Rebuild panel keeping header
+    const header = panel.querySelector('.lfm-header');
+    panel.innerHTML = '';
+    panel.appendChild(header);
+
+    tracks.slice(0, 5).forEach((t, idx) => {
+      const isNow = t['@attr']?.nowplaying === 'true';
+      const row   = document.createElement('a');
+      row.className = 'lfm-track' + (isNow ? ' now' : '');
+      row.href = `https://www.last.fm/user/${LFM_USER}`;
+      row.target = '_blank';
+      row.rel = 'noopener';
+      row.style.textDecoration = 'none';
+
+      // Album art
+      const imgSrc = t.image?.find(i => i.size === 'small')?.['#text'];
+      if (imgSrc && imgSrc.trim() !== '') {
+        const img = document.createElement('img');
+        img.className = 'lfm-img';
+        img.src = imgSrc;
+        img.alt = '';
+        img.onerror = () => { img.replaceWith(ph()); };
+        row.appendChild(img);
+      } else {
+        row.appendChild(ph());
+      }
+
+      // Text body
+      const body = document.createElement('div');
+      body.className = 'lfm-body';
+      body.innerHTML = `
+        <div class="lfm-name">${t.name}</div>
+        <div class="lfm-artist">${t.artist?.['#text'] || t.artist?.name || ''}</div>
+      `;
+      row.appendChild(body);
+
+      // Right side — bars if now playing, else time
+      const right = document.createElement('div');
+      right.className = 'lfm-right';
+      if (isNow) {
+        right.appendChild(makeBars());
+      } else {
+        const ts = t.date?.uts;
+        const time = document.createElement('span');
+        time.className = 'lfm-time';
+        time.textContent = ts ? timeAgo(ts) : '';
+        right.appendChild(time);
+      }
+      row.appendChild(right);
+
+      panel.appendChild(row);
+    });
+
+  } catch (e) {
+    const panel = document.getElementById('lfm-panel');
+    if (panel) {
+      const err = document.createElement('div');
+      err.className = 'lfm-err';
+      err.textContent = 'could not load tracks';
+      panel.appendChild(err);
+    }
+  }
+}
+
+function ph() {
+  const d = document.createElement('div');
+  d.className = 'lfm-img-ph';
+  d.textContent = '♪';
+  return d;
+}
+
+loadLastFm();
+// refresh every 45 seconds
+setInterval(loadLastFm, 45000);

@@ -118,65 +118,105 @@
 
     <div class="interests-stack">
 
-
+      <!-- ── MUSIC card ── -->
       <div class="ic music">
+        <canvas class="constellation-canvas" id="constellation-canvas"></canvas>
+        <canvas class="music-wave" id="music-wave"></canvas>
+
         <div class="ic-top">
           <div class="ic-info">
+            <div class="ic-eyebrow">01 / music</div>
             <div class="ic-title">music</div>
             <div class="ic-desc">
               Music is something I really enjoy. It has the power to evoke emotions and create
               a connection with the listener. I like discovering new artists and genres.
             </div>
-            <div class="ic-tag-row" style="margin-top:.9rem;">
+            <div class="ic-tag-row">
               <span class="ic-tag">math-rock</span>
               <span class="ic-tag">shoegaze</span>
               <span class="ic-tag">rock</span>
             </div>
+            <a class="spotify-btn" href="https://open.spotify.com/user/c7dc0sc0gshnn7vg1tnpfgv88?si=a504a5092f524c6b" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+              Iridescent · spotify ↗
+            </a>
           </div>
 
+          <div class="ic-divider-abstract">
+            <svg class="abstract-divider-svg" viewBox="0 0 24 220" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 0 C 6 18, 18 36, 12 54 C 6 72, 18 90, 12 108 C 6 126, 18 144, 12 162 C 6 180, 18 198, 12 220"
+                stroke="rgba(255,255,255,0.07)" stroke-width="1" fill="none" stroke-linecap="round"/>
+              <path d="M12 20 C 4 34, 20 50, 10 66 C 2 80, 16 96, 12 114 C 8 130, 18 148, 10 164 C 4 178, 16 196, 12 212"
+                stroke="rgba(74,222,128,0.06)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <circle cx="12" cy="54"  r="1.5" fill="rgba(74,222,128,0.2)"/>
+              <circle cx="12" cy="108" r="1.5" fill="rgba(74,222,128,0.15)"/>
+              <circle cx="12" cy="162" r="1.5" fill="rgba(74,222,128,0.2)"/>
+              <circle cx="10" cy="80"  r="1"   fill="rgba(255,255,255,0.06)"/>
+              <circle cx="14" cy="136" r="1"   fill="rgba(255,255,255,0.06)"/>
+            </svg>
+          </div>
+
+          <div class="lfm-panel" id="lfm-panel">
+            <div class="lfm-header">
+              <span class="lfm-label">recent plays</span>
+              <span class="lfm-logo">last.fm</span>
+            </div>
+            <div class="lfm-skeleton">loading tracks...</div>
+          </div>
         </div>
-        <div class="ic-num">01</div>
+
+        <div class="ic-num-corner">01</div>
       </div>
 
-
-      <div class="ic anime">
+      <!-- ── ANIME card ── -->
+      <div class="ic anime" id="ic-anime">
+        <!-- abstract corner gradient blob -->
+        <div class="anime-blob"></div>
         <div class="ic-ghost">アニメ</div>
         <div class="ic-body">
           <div class="ic-label">interest · 02</div>
           <div class="ic-title">anime</div>
           <div class="ic-accent-line"></div>
           <div class="ic-desc">
-            I like watching anime sometimes — it's a great way to relax and enjoy amazing stories,
-            and art.
+            I like watching anime sometimes — a great way to relax and enjoy amazing stories and art.
+          </div>
+          <div class="anime-tags">
+            <span>drama</span><span>romance</span><span>comedy</span>
           </div>
           <a class="anilist-btn" href="https://anilist.co/user/Iridescentt/" target="_blank" rel="noopener">
-            anilist ↗
+            view anilist ↗
           </a>
         </div>
       </div>
 
-
+      <!-- ── GAMES card ── -->
       <div class="ic games">
-        <div class="ic-top-row">
-          <div class="ic-title">games</div>
-          <div class="ic-ping">online</div>
-        </div>
-        <div class="ic-desc">
-          I enjoy playing video games, especially with friends. Games are a great way to
-          unwind, laugh, and sometimes rage.
-        </div>
-        <div class="ic-stats">
-          <div class="stat">
-            <div class="stat-val">co-op</div>
-            <div class="stat-key">preferred mode</div>
+        <div class="games-blob"></div>
+        <div class="games-inner">
+          <div class="ic-top-row">
+            <div>
+              <div class="ic-eyebrow">03 / games</div>
+              <div class="ic-title">games</div>
+            </div>
+            <div class="ic-ping">online</div>
           </div>
-          <div class="stat">
-            <div class="stat-val">casual</div>
-            <div class="stat-key">playstyle</div>
+          <div class="ic-desc">
+            I enjoy playing video games, especially with friends. Games are a great way to
+            unwind, laugh, and sometimes rage.
           </div>
-          <div class="stat">
-            <div class="stat-val">w/ friends</div>
-            <div class="stat-key">best when</div>
+          <div class="ic-stats">
+            <div class="stat">
+              <div class="stat-val">co-op</div>
+              <div class="stat-key">preferred mode</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">casual</div>
+              <div class="stat-key">playstyle</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val">w/ friends</div>
+              <div class="stat-key">best when</div>
+            </div>
           </div>
         </div>
       </div>
