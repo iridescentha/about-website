@@ -133,11 +133,129 @@ if (hamburger) {
       }
     }
 
+    class SpecialMeteor {
+      constructor() { this.reset(); }
+      reset() {
+        this.x     = Math.random() * W * 1.4;
+        this.y     = -30;
+        this.len   = Math.random() * 180 + 120;
+        this.speed = Math.random() * 2.5 + 5.5;
+        this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.15;
+        this.vx    = Math.cos(this.angle) * this.speed;
+        this.vy    = Math.sin(this.angle) * this.speed;
+        this.alpha = 0;
+        this.life  = 0;
+        this.maxLife = Math.random() * 80 + 50;
+        this.width = Math.random() * 2.5 + 2.2;
+        this.dead  = false;
+        this.glowPhase = Math.random() * Math.PI * 2;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life++;
+        this.glowPhase += 0.08;
+
+        if (this.life < 15) this.alpha = this.life / 15;
+        else if (this.life > this.maxLife - 20) this.alpha = Math.max(0, (this.maxLife - this.life) / 20);
+        else this.alpha = 1;
+        if (this.life >= this.maxLife || this.x > W + 50 || this.y > H + 50) this.dead = true;
+      }
+      draw() {
+        const tailX = this.x - Math.cos(this.angle) * this.len;
+        const tailY = this.y - Math.sin(this.angle) * this.len;
+        const grad = ctx.createLinearGradient(tailX, tailY, this.x, this.y);
+        grad.addColorStop(0, `rgba(100,200,150,0)`);
+        grad.addColorStop(0.5, `rgba(150,220,180,${this.alpha * 0.3})`);
+        grad.addColorStop(1, `rgba(200,255,200,${this.alpha})`);
+        
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth   = this.width;
+        ctx.lineCap     = 'round';
+        ctx.stroke();
+
+        const glowR = Math.sin(this.glowPhase) * 0.3 + 0.6;
+        const rgbShift = Math.sin(this.glowPhase * 0.5);
+        
+        const glowIntensity = this.alpha * 0.4;
+        const r1 = Math.round(100 + 80 * glowR + 30 * rgbShift);
+        const g1 = Math.round(220 + 20 * rgbShift);
+        const b1 = Math.round(150 + 50 * glowR - 20 * rgbShift);
+        
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width * 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r1},${g1},${b1},${glowIntensity * 0.3})`;
+        ctx.fill();
+
+        const r2 = Math.round(180 + 60 * glowR + 40 * rgbShift);
+        const g2 = Math.round(255 + 10 * rgbShift);
+        const b2 = Math.round(200 + 40 * glowR - 30 * rgbShift);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width * 1.3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r2},${g2},${b2},${this.alpha * 0.8})`;
+        ctx.fill();
+
+        const r3 = Math.round(220 + 30 * rgbShift);
+        const g3 = 255;
+        const b3 = Math.round(240 - 20 * rgbShift);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width * 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r3},${g3},${b3},${this.alpha})`;
+        ctx.fill();
+
+        const r4 = Math.round(255 + 20 * rgbShift);
+        const g4 = Math.round(255 - 10 * rgbShift);
+        const b4 = Math.round(220 - 30 * rgbShift);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.width * 0.7, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r4},${g4},${b4},${this.alpha * 0.9})`;
+        ctx.fill();
+
+        this.drawAstigmatismBurst();
+      }
+
+      drawAstigmatismBurst() {
+        const rayLength = this.width * 30;
+        const rayWidth = this.width * 0.3;
+        const rotation = this.glowPhase * 0.3;
+
+        const angles = [0, Math.PI / 2, Math.PI, (Math.PI * 3) / 2];
+
+        for (let angle of angles) {
+          const rotatedAngle = angle + rotation;
+          const endX = this.x + Math.cos(rotatedAngle) * rayLength;
+          const endY = this.y + Math.sin(rotatedAngle) * rayLength;
+
+          const rayGrad = ctx.createLinearGradient(this.x, this.y, endX, endY);
+          rayGrad.addColorStop(0, `rgba(200,255,200,${this.alpha * 0.8})`);
+          rayGrad.addColorStop(0.4, `rgba(180,255,200,${this.alpha * 0.5})`);
+          rayGrad.addColorStop(1, `rgba(150,255,180,0)`);
+
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(endX, endY);
+          ctx.strokeStyle = rayGrad;
+          ctx.lineWidth = rayWidth;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+        }
+      }
+    }
+
     const meteors = [];
     let   frame   = 0;
+    let   specialMeteorFrame = 0;
+    const SPECIAL_METEOR_INTERVAL = 100;
 
     function spawnMeteor() {
       if (meteors.length < 6) meteors.push(new Meteor());
+    }
+
+    function spawnSpecialMeteor() {
+      meteors.push(new SpecialMeteor());
     }
 
 
@@ -159,7 +277,15 @@ if (hamburger) {
 
 
       frame++;
+      specialMeteorFrame++;
+      
       if (frame % 90 === 0 || (frame % 30 === 0 && Math.random() < 0.25)) spawnMeteor();
+      
+      if (specialMeteorFrame >= SPECIAL_METEOR_INTERVAL) {
+        specialMeteorFrame = 0;
+        const randomDelay = Math.random() * 120;
+        if (randomDelay < 30) spawnSpecialMeteor();
+      }
 
 
       for (let i = meteors.length - 1; i >= 0; i--) {
