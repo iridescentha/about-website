@@ -56,17 +56,15 @@ if (hamburger) {
   const nameWrap = document.getElementById('name-wrap');
   const letters = [
     { t: '>>', br: true  },
-    { t: 'i', br: false  },
-    { t: 'r', br: false  },
-    { t: 'i', br: false  },
-    { t: 'd', br: false  },
-    { t: 'e', br: false  },
-    { t: 's', br: false  },
-    { t: 'c', br: false  },
-    { t: 'e', br: false  },
-    { t: 'n', br: false  },
-    { t: 't', br: false  },
     { t: 'h', br: false  },
+    { t: 'u', br: false  },
+    { t: 'g', br: false  },
+    { t: 'o', br: false  },
+    { t: 'a', br: false  },
+    { t: 'f', br: false  },
+    { t: 'i', br: false  },
+    { t: 'z', br: false  },
+    { t: 'a', br: false  },
     { t: 'a', br: false  },
   ];
   letters.forEach((l, i) => {
@@ -87,8 +85,14 @@ if (hamburger) {
       W = canvas.width  = window.innerWidth;
       H = canvas.height = window.innerHeight;
     }
-    window.addEventListener('resize', resize);
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 120);
+    });
     resize();
+
+    const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
     window.addEventListener('mousemove', (e) => {
@@ -372,15 +376,17 @@ if (hamburger) {
 
       const t = performance.now() / 1000;
       drawNebula(t);
+      ctx.fillStyle = 'rgb(200,230,220)';
       for (const s of stars) {
         const twinkle = 0.5 + 0.5 * Math.sin(t * s.twinkleSpeed * 6 + s.twinklePhase);
         const px = mouseX * s.r * PARALLAX_STRENGTH;
         const py = mouseY * s.r * PARALLAX_STRENGTH;
+        ctx.globalAlpha = s.o * twinkle;
         ctx.beginPath();
         ctx.arc((s.x % W) + px, (s.y % H) + py, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200,230,220,${s.o * twinkle})`;
         ctx.fill();
       }
+      ctx.globalAlpha = 1;
 
 
       frame++;
@@ -405,7 +411,7 @@ if (hamburger) {
         }
       }
 
-      requestAnimationFrame(tick);
+      if (!REDUCED_MOTION) requestAnimationFrame(tick);
     }
     tick();
   })();
@@ -428,6 +434,7 @@ if (lbar) {
   if (!cv) return;
   const ctx = cv.getContext('2d');
   let W, H, frame = 0;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function resize() {
     const rect = cv.parentElement.getBoundingClientRect();
@@ -458,7 +465,7 @@ if (lbar) {
       ctx.stroke();
     }
     frame++;
-    requestAnimationFrame(drawWave);
+    if (!reducedMotion) requestAnimationFrame(drawWave);
   }
   drawWave();
 })();
@@ -468,6 +475,7 @@ function initConstellation(canvasId, rgb, dotCount) {
   if (!cv) return;
   const ctx = cv.getContext('2d');
   let W, H;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let dots = [];
 
@@ -525,7 +533,7 @@ function initConstellation(canvasId, rgb, dotCount) {
       ctx.fill();
     }
 
-    requestAnimationFrame(draw);
+    if (!reducedMotion) requestAnimationFrame(draw);
   }
   draw();
 }
