@@ -108,178 +108,26 @@ if (hamburger) {
       twinklePhase: Math.random() * Math.PI * 2,
     }));
 
-    const JET_SHAPE = [
-      { x:  110, y:   0 },
-      { x:   60, y:   0 },
-      { x:   10, y:   0 },
-      { x:  -55, y: -100 },
-      { x:  -55, y:  100 },
-      { x:  -95, y:   0 },
-      { x: -125, y: -32 },
-      { x: -125, y:  32 },
-      { x: -145, y:   0 },
+    const NEBULA_BLOBS = [
+      { xR: 0.14, yR: 0.14, r: 420, color: '150,120,220', alpha: 0.095, driftSeed: 0 },
+      { xR: 0.30, yR: 0.24, r: 360, color: '100,195,205', alpha: 0.085, driftSeed: 2 },
+      { xR: 0.09, yR: 0.32, r: 340, color: '215,130,165', alpha: 0.075, driftSeed: 4 },
+      { xR: 0.24, yR: 0.42, r: 300, color: '210,180,120', alpha: 0.06,  driftSeed: 6 },
     ];
-    const JET_EDGES = [ [0,1],[1,2], [2,3],[2,4], [2,5], [5,6],[5,7], [5,8] ];
-    const JET_FILLS = [ [2,3,5,0.075], [2,4,5,0.075], [5,6,8,0.06], [5,7,8,0.06] ];
-    const JET_BODY = [
-      { i: 0, w: 5  },
-      { i: 1, w: 10 },
-      { i: 2, w: 12 },
-      { i: 5, w: 7  },
-      { i: 8, w: 2  },
-    ];
-
-    const PLANE_MAX_SPEED   = 4.6;
-    const PLANE_LEAD_SPEED  = 3.5;
-    const PLANE_FADE_FRAMES = 110;
-    const PLANE_GLOW_RADIUS = 210;
-    const PLANE_OFFSCREEN_MARGIN = 230;
-
-    function fillTri(starArr, a, b, c, alpha) {
-      ctx.beginPath();
-      ctx.moveTo(starArr[a].x, starArr[a].y);
-      ctx.lineTo(starArr[b].x, starArr[b].y);
-      ctx.lineTo(starArr[c].x, starArr[c].y);
-      ctx.closePath();
-      ctx.fillStyle = `rgba(74,222,128,${alpha})`;
-      ctx.fill();
-    }
-
-    class Plane {
-      constructor() {
-        const side = Math.floor(Math.random() * 4);
-        const inward = [Math.PI / 2, Math.PI, -Math.PI / 2, 0][side];
-        if (side === 0)      { this.x = Math.random() * W; this.y = -60; }
-        else if (side === 1) { this.x = W + 60; this.y = Math.random() * H; }
-        else if (side === 2) { this.x = Math.random() * W; this.y = H + 60; }
-        else                 { this.x = -60; this.y = Math.random() * H; }
-        this.heading = inward + (Math.random() - 0.5) * 1.0;
-
-        this.age = 0;
-        this.alpha = 0;
-        this.dead = false;
-        this.cx = this.x; this.cy = this.y;
-        this.stars = JET_SHAPE.map((pt) => ({
-          x: this.x + (Math.random() - 0.5) * 16,
-          y: this.y + (Math.random() - 0.5) * 16,
-          vx: 0, vy: 0,
-          r: Math.random() * 1.3 + 0.9,
-          followStrength: Math.random() * 0.014 + 0.045,
-          shapeX: pt.x, shapeY: pt.y,
-        }));
-      }
-
-      update() {
-        this.age++;
-        this.alpha = Math.min(1, this.age / PLANE_FADE_FRAMES);
-
-        this.x += Math.cos(this.heading) * PLANE_LEAD_SPEED;
-        this.y += Math.sin(this.heading) * PLANE_LEAD_SPEED;
-
-        if (this.x < -PLANE_OFFSCREEN_MARGIN || this.x > W + PLANE_OFFSCREEN_MARGIN ||
-            this.y < -PLANE_OFFSCREEN_MARGIN || this.y > H + PLANE_OFFSCREEN_MARGIN) {
-          this.dead = true;
-        }
-
-        this.headCos = Math.cos(this.heading);
-        this.headSin = Math.sin(this.heading);
-
-        let cx = 0, cy = 0;
-        for (const s of this.stars) {
-          const rotX = s.shapeX * this.headCos - s.shapeY * this.headSin;
-          const rotY = s.shapeX * this.headSin + s.shapeY * this.headCos;
-          const tx = this.x + rotX, ty = this.y + rotY;
-
-          const ax = (tx - s.x) * s.followStrength;
-          const ay = (ty - s.y) * s.followStrength;
-
-          s.vx = (s.vx + ax) * 0.9;
-          s.vy = (s.vy + ay) * 0.9;
-          const speed = Math.hypot(s.vx, s.vy);
-          if (speed > PLANE_MAX_SPEED) { s.vx = s.vx / speed * PLANE_MAX_SPEED; s.vy = s.vy / speed * PLANE_MAX_SPEED; }
-
-          s.x += s.vx;
-          s.y += s.vy;
-          cx += s.x; cy += s.y;
-        }
-        this.cx = cx / this.stars.length;
-        this.cy = cy / this.stars.length;
-      }
-
-      draw() {
-        const a = this.alpha;
-        const stars = this.stars;
-
-        const glow = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, PLANE_GLOW_RADIUS);
-        glow.addColorStop(0, `rgba(74,222,128,${0.018 * a})`);
-        glow.addColorStop(1, 'rgba(74,222,128,0)');
+    function drawNebula(t) {
+      for (const b of NEBULA_BLOBS) {
+        const dx = Math.sin(t * 0.02 + b.driftSeed) * 16;
+        const dy = Math.cos(t * 0.015 + b.driftSeed) * 10;
+        const x = W * b.xR + dx, y = H * b.yR + dy;
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, b.r);
+        grad.addColorStop(0, `rgba(${b.color},${b.alpha})`);
+        grad.addColorStop(1, `rgba(${b.color},0)`);
         ctx.beginPath();
-        ctx.arc(this.cx, this.cy, PLANE_GLOW_RADIUS, 0, Math.PI * 2);
-        ctx.fillStyle = glow;
+        ctx.arc(x, y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
         ctx.fill();
-
-        for (const [i, j, k, alpha] of JET_FILLS) {
-          fillTri(stars, i, j, k, alpha * 0.32 * a);
-        }
-
-        for (const [rootI, tipI] of [[2, 3], [2, 4]]) {
-          const root = stars[rootI], tip = stars[tipI];
-          for (const t of [0.4, 0.72]) {
-            const ex = root.x + (tip.x - root.x) * t;
-            const ey = root.y + (tip.y - root.y) * t;
-            ctx.save();
-            ctx.translate(ex, ey);
-            ctx.rotate(this.heading);
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 7, 2.6, 0, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(190,255,220,${0.13 * a})`;
-            ctx.fill();
-            ctx.restore();
-          }
-        }
-
-        const perpX = -this.headSin, perpY = this.headCos;
-        ctx.beginPath();
-        JET_BODY.forEach((p, k) => {
-          const s = stars[p.i];
-          const px = s.x + perpX * p.w, py = s.y + perpY * p.w;
-          k === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-        });
-        for (let k = JET_BODY.length - 1; k >= 0; k--) {
-          const p = JET_BODY[k];
-          const s = stars[p.i];
-          ctx.lineTo(s.x - perpX * p.w, s.y - perpY * p.w);
-        }
-        ctx.closePath();
-        ctx.fillStyle = `rgba(150,255,210,${0.032 * a})`;
-        ctx.fill();
-
-        const nose = stars[JET_BODY[0].i];
-        ctx.beginPath();
-        ctx.arc(nose.x, nose.y, JET_BODY[0].w, this.heading - Math.PI / 2, this.heading + Math.PI / 2);
-        ctx.fill();
-
-        for (const [i, j] of JET_EDGES) {
-          ctx.beginPath();
-          ctx.moveTo(stars[i].x, stars[i].y);
-          ctx.lineTo(stars[j].x, stars[j].y);
-          ctx.strokeStyle = `rgba(74,222,128,${0.13 * a})`;
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-        }
-
-        for (const s of stars) {
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(190,255,220,${0.18 * a})`;
-          ctx.fill();
-        }
       }
     }
-
-    const PLANE_MAX_CONCURRENT = 2;
-    const planes = [new Plane()];
-    let planeSpawnCooldown = 200;
 
 
     class Meteor {
@@ -523,6 +371,7 @@ if (hamburger) {
       mouseY += (targetMouseY - mouseY) * 0.05;
 
       const t = performance.now() / 1000;
+      drawNebula(t);
       for (const s of stars) {
         const twinkle = 0.5 + 0.5 * Math.sin(t * s.twinkleSpeed * 6 + s.twinklePhase);
         const px = mouseX * s.r * PARALLAX_STRENGTH;
@@ -531,32 +380,6 @@ if (hamburger) {
         ctx.arc((s.x % W) + px, (s.y % H) + py, s.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(200,230,220,${s.o * twinkle})`;
         ctx.fill();
-      }
-
-      if (planeSpawnCooldown > 0) {
-        planeSpawnCooldown--;
-      } else if (planes.length < PLANE_MAX_CONCURRENT && Math.random() < 0.02) {
-        planes.push(new Plane());
-        planeSpawnCooldown = 260 + Math.random() * 260;
-      }
-
-      for (let i = 0; i < planes.length; i++) {
-        for (let j = i + 1; j < planes.length; j++) {
-          const dx = planes[i].x - planes[j].x, dy = planes[i].y - planes[j].y;
-          const dist = Math.hypot(dx, dy) || 1;
-          if (dist < 260) {
-            const push = (1 - dist / 260) * 0.03;
-            const away = Math.atan2(dy, dx);
-            planes[i].heading += Math.sin(away - planes[i].heading) * push;
-            planes[j].heading += Math.sin((away + Math.PI) - planes[j].heading) * push;
-          }
-        }
-      }
-
-      for (let i = planes.length - 1; i >= 0; i--) {
-        planes[i].update();
-        planes[i].draw();
-        if (planes[i].dead) planes.splice(i, 1);
       }
 
 
