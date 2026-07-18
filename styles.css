@@ -46,14 +46,23 @@ body::before {
 
 .site-header {
   position: sticky; top: 0; z-index: 100; flex-shrink: 0;
-  height: var(--nav-h);
-  background: rgba(14,14,15,0.92);
-  backdrop-filter: blur(16px);
-  border-bottom: .5px solid var(--border);
+  padding: 14px var(--pad-x) 0;
 }
 .navbar {
+  position: relative;
   display: flex; align-items: center;
-  height: 100%; padding: 0 var(--pad-x); gap: 1rem;
+  height: var(--nav-h); padding: 0 1.4rem; gap: 1rem;
+  background: rgba(20,20,22,0.72);
+  backdrop-filter: blur(20px) saturate(160%);
+  border: .5px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03);
+  transition: background .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.site-header.scrolled .navbar {
+  background: rgba(14,14,15,0.88);
+  box-shadow: 0 10px 34px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.03);
+  border-color: rgba(255,255,255,0.1);
 }
 
 .nav-logo {
@@ -64,16 +73,30 @@ body::before {
 .nav-logo-text { font-size: 13px; font-weight: 500; color: var(--green); letter-spacing: .02em; }
 
 .nav-links {
+  position: relative;
   display: flex; align-items: center; list-style: none;
   gap: .1rem; margin: 0 auto;
 }
+.nav-indicator {
+  position: absolute; top: 3px; bottom: 3px; left: 0; width: 0;
+  border-radius: 7px; background: var(--green-dim);
+  border: .5px solid rgba(74,222,128,.25);
+  transform: translateX(0);
+  transition: transform .4s cubic-bezier(.22,1,.36,1), width .4s cubic-bezier(.22,1,.36,1), opacity .2s;
+  pointer-events: none; z-index: 0; opacity: 0;
+}
+.nav-links li { position: relative; z-index: 1; }
 .nav-links li a {
   display: block; font-size: 12px; color: var(--muted); text-decoration: none;
   letter-spacing: .07em; padding: 5px 14px; border-radius: 5px;
   transition: color .2s, background .2s; cursor: pointer;
+  position: relative;
 }
 .nav-links li a:hover  { color: var(--text); background: rgba(255,255,255,0.04); }
 .nav-links li a.active { color: var(--green); background: var(--green-dim); }
+@media (min-width: 641px) {
+  .nav-links li a.active { background: transparent; }
+}
 
 .nav-right {
   display: flex; align-items: center; gap: 7px;
@@ -121,8 +144,6 @@ body::before {
 }
 .slabel::after { content: ''; flex: 1; height: .5px; background: var(--border); }
 
-
-#page-about { flex-direction: column !important; gap: 0; }
 
 .about-left {
   flex: 1; min-width: 0; max-width: 720px;
@@ -181,17 +202,8 @@ body::before {
 .soc-btn:hover { color:var(--green); border-color:var(--border-h); background:var(--green-dim); }
 .soc-btn svg { width:15px; height:15px; fill:currentColor; flex-shrink:0; }
 
-.aside-label { font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:rgba(107,114,128,.4); margin-bottom:.5rem; }
-.aside-divider { height:.5px; background:var(--border); }
-.listen-track  { font-size:12.5px; color:var(--text); }
-.listen-artist { font-size:11px; color:var(--muted); margin-top:3px; }
-.listen-bars   { display:flex; align-items:flex-end; gap:2px; height:16px; margin-top:.65rem; }
 .lb { width:3px; border-radius:2px 2px 0 0; background:rgba(74,222,128,.4); animation:lbDance var(--d) ease-in-out infinite alternate; animation-delay:var(--dl); }
 @keyframes lbDance { from{height:var(--lo)} to{height:var(--hi); background:rgba(74,222,128,.65)} }
-.genre-list { display:flex; flex-direction:column; gap:.35rem; }
-.genre-item { font-size:11px; color:var(--muted); }
-.genre-item::before { content:'— '; color:rgba(107,114,128,.3); }
-.mood { font-size:11px; color:rgba(107,114,128,.5); line-height:1.8; }
 
 
 #page-projects { gap:0; }
@@ -564,12 +576,16 @@ body::before {
 
 
 @media (max-width:640px) {
+  .nav-indicator { display:none; }
   .nav-links {
     display:none; flex-direction:column; align-items:stretch; gap:.2rem;
-    position:absolute; top:var(--nav-h); left:0; right:0;
-    background:rgba(14,14,15,.98);
-    padding:1rem var(--pad-x) 1.5rem;
-    border-bottom:.5px solid var(--border);
+    position:absolute; top:calc(100% + 10px); left:0; right:0;
+    background:rgba(14,14,15,.96);
+    backdrop-filter: blur(20px) saturate(160%);
+    border:.5px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    box-shadow: 0 10px 34px rgba(0,0,0,0.4);
+    padding:.9rem;
   }
   .nav-links.open { display:flex; }
   .nav-links li a { padding:10px 14px; font-size:13px; }
