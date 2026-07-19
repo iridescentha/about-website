@@ -350,10 +350,133 @@ if (hamburger) {
       }
     }
 
+        class ChaosMeteor {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * W * 1.4;
+        this.y = -30;
+        this.len = Math.random() * 160 + 100;
+        this.speed = Math.random() * 8 + 5;
+        this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.2;
+        this.vx = Math.cos(this.angle) * this.speed;
+        this.vy = Math.sin(this.angle) * this.speed;
+        this.alpha = 0;
+        this.life = 0;
+        this.maxLife = Math.random() * 90 + 60;
+        this.width = Math.random() + 2;
+        this.dead = false;
+
+        this.hueBase = Math.random() * 360;
+        this.hueSpin = Math.random() * 6 + 3;
+        this.wobblePhase = Math.random() * Math.PI * 2;
+
+        const rayCount = Math.floor(Math.random() * 5) + 7;
+        this.rays = Array.from({length: rayCount}, () => ({
+          baseAngle: Math.random() * Math.PI * 2,
+          lenMul: Math.random() * 0.9 + 0.5,
+          speedMul: (Math.random() < 0.5 ? -1 : 1) * (Math.random() * 1.4 + 0.4),
+          phaseOffset: Math.random() * Math.PI * 2,
+          hueOffset: Math.random() * 360,
+        }));
+
+        this.embers = [];
+      }
+      update() {
+        this.life++;
+        this.wobblePhase += 0.3;
+        const wobble = Math.sin(this.wobblePhase) * 0.6;
+        this.x += this.vx + Math.cos(this.angle + Math.PI / 2) * wobble;
+        this.y += this.vy + Math.sin(this.angle + Math.PI / 2) * wobble;
+
+        if (this.life < 15) this.alpha = this.life / 15;
+        else if (this.life > this.maxLife - 20) this.alpha = Math.max(0, (this.maxLife - this.life) / 20);
+        else this.alpha = 1;
+        if (this.life >= this.maxLife || this.x > W + 50 || this.y > H + 50) this.dead = true;
+
+        this.hueBase = (this.hueBase + this.hueSpin) % 360;
+
+        if (!this.dead && this.embers.length < 55 && Math.random() < 0.7) {
+          const back = Math.random() * this.len * 0.5;
+          this.embers.push({
+            x: this.x - Math.cos(this.angle) * back,
+            y: this.y - Math.sin(this.angle) * back,
+            vx: (Math.random() - 0.5) * 1.4 - this.vx * 0.03,
+            vy: (Math.random() - 0.5) * 1.4 - this.vy * 0.03,
+            r: Math.random() * 1.8 + 0.5,
+            hue: Math.random() * 360,
+            life: 0,
+            maxLife: Math.random() * 45 + 25,
+          });
+        }
+        for (let i = this.embers.length - 1; i >= 0; i--) {
+          const e = this.embers[i];
+          e.x += e.vx; e.y += e.vy; e.vy += 0.01; e.life++;
+          if (e.life >= e.maxLife) this.embers.splice(i, 1);
+        }
+      }
+      draw() {
+        const tailX = this.x - Math.cos(this.angle) * this.len;
+        const tailY = this.y - Math.sin(this.angle) * this.len;
+        const tailGrad = ctx.createLinearGradient(tailX, tailY, this.x, this.y);
+        tailGrad.addColorStop(0,    `hsla(${this.hueBase},90%,60%,0)`);
+        tailGrad.addColorStop(0.35, `hsla(${(this.hueBase + 80) % 360},90%,60%,${this.alpha * 0.5})`);
+        tailGrad.addColorStop(0.7,  `hsla(${(this.hueBase + 180) % 360},90%,60%,${this.alpha * 0.7})`);
+        tailGrad.addColorStop(1,    `hsla(${(this.hueBase + 280) % 360},95%,70%,${this.alpha})`);
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(this.x, this.y);
+        ctx.strokeStyle = tailGrad;
+        ctx.lineWidth = this.width;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        for (const e of this.embers) {
+          const a = this.alpha * Math.max(0, 1 - e.life / e.maxLife);
+          ctx.beginPath();
+          ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${e.hue},90%,65%,${a * 0.9})`;
+          ctx.fill();
+        }
+
+        for (const ray of this.rays) {
+          const rotatedAngle = ray.baseAngle + this.life * 0.05 * ray.speedMul;
+          const pulse = 0.7 + 0.3 * Math.sin(this.life * 0.2 + ray.phaseOffset);
+          const rayLength = this.width * 12 * ray.lenMul * pulse;
+          const hue = (this.hueBase + ray.hueOffset) % 360;
+          const rayAlpha = this.alpha * (0.5 + 0.5 * Math.sin(this.life * 0.3 + ray.phaseOffset));
+
+          const endX = this.x + Math.cos(rotatedAngle) * rayLength;
+          const endY = this.y + Math.sin(rotatedAngle) * rayLength;
+          const rayGrad = ctx.createLinearGradient(this.x, this.y, endX, endY);
+          rayGrad.addColorStop(0, `hsla(${hue},95%,70%,${rayAlpha * 0.9})`);
+          rayGrad.addColorStop(1, `hsla(${hue},95%,60%,0)`);
+
+          ctx.beginPath();
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(endX, endY);
+          ctx.strokeStyle = rayGrad;
+          ctx.lineWidth = this.width * 0.35;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+        }
+
+        for (let i = 0; i < 4; i++) {
+          const hue = (this.hueBase + i * 70) % 360;
+          const r = this.width * (1.8 - i * 0.3);
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${hue},95%,70%,${this.alpha * (0.85 - i * 0.15)})`;
+          ctx.fill();
+        }
+      }
+    }
+
     const meteors = [];
     let   frame   = 0;
     let   specialMeteorFrame = 0;
     const SPECIAL_METEOR_INTERVAL = 100;
+    let   chaosMeteorFrame = 0;
+    const CHAOS_METEOR_INTERVAL = 70;
 
     function spawnMeteor() {
       if (meteors.length < 6) meteors.push(new Meteor());
@@ -361,6 +484,10 @@ if (hamburger) {
 
     function spawnSpecialMeteor() {
       meteors.push(new SpecialMeteor());
+    }
+
+    function spawnChaosMeteor() {
+      meteors.push(new ChaosMeteor());
     }
 
 
@@ -391,13 +518,20 @@ if (hamburger) {
 
       frame++;
       specialMeteorFrame++;
-      
+      chaosMeteorFrame++;
+
       if (frame % 90 === 0 || (frame % 30 === 0 && Math.random() < 0.25)) spawnMeteor();
-      
+
       if (specialMeteorFrame >= SPECIAL_METEOR_INTERVAL) {
         specialMeteorFrame = 0;
         const randomDelay = Math.random() * 120;
         if (randomDelay < 30) spawnSpecialMeteor();
+      }
+
+      if (chaosMeteorFrame >= CHAOS_METEOR_INTERVAL) {
+        chaosMeteorFrame = 0;
+        const randomDelay = Math.random() * 200;
+        if (randomDelay < 30) spawnChaosMeteor();
       }
 
 
@@ -445,7 +579,9 @@ if (lbar) {
   new ResizeObserver(resize).observe(cv.parentElement);
 
   const LINES = 5;
+  let running = false;
   function drawWave() {
+    if (!running) return;
     ctx.clearRect(0, 0, W, H);
     const t = frame / 80;
     for (let l = 0; l < LINES; l++) {
@@ -465,9 +601,24 @@ if (lbar) {
       ctx.stroke();
     }
     frame++;
-    if (!reducedMotion) requestAnimationFrame(drawWave);
+    requestAnimationFrame(drawWave);
   }
-  drawWave();
+
+  if (reducedMotion) {
+    running = true;
+    drawWave();
+    running = false;
+  } else {
+    new IntersectionObserver((entries) => {
+      const visible = entries[0].isIntersecting;
+      if (visible && !running) {
+        running = true;
+        drawWave();
+      } else if (!visible) {
+        running = false;
+      }
+    }).observe(cv);
+  }
 })();
 
 function initConstellation(canvasId, rgb, dotCount) {
@@ -495,8 +646,10 @@ function initConstellation(canvasId, rgb, dotCount) {
   new ResizeObserver(resize).observe(cv);
 
   const CONNECT_DIST = 90;
+  let running = false;
 
   function draw() {
+    if (!running) return;
     ctx.clearRect(0, 0, W, H);
 
     for (const d of dots) {
@@ -533,9 +686,24 @@ function initConstellation(canvasId, rgb, dotCount) {
       ctx.fill();
     }
 
-    if (!reducedMotion) requestAnimationFrame(draw);
+    requestAnimationFrame(draw);
   }
-  draw();
+
+  if (reducedMotion) {
+    running = true;
+    draw();
+    running = false;
+  } else {
+    new IntersectionObserver((entries) => {
+      const visible = entries[0].isIntersecting;
+      if (visible && !running) {
+        running = true;
+        draw();
+      } else if (!visible) {
+        running = false;
+      }
+    }).observe(cv);
+  }
 }
 initConstellation('constellation-canvas', '103,232,249', 18);
 
